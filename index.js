@@ -59,6 +59,34 @@ async function run() {
       res.send(response);
     });
 
+    app.get("/tips/:id", async(req,res)=>{
+      const id = req.params.id;
+      const data = await tipsCollection.findOne({"_id": new ObjectId(id)});
+      const response = {
+        "success": true,
+        "message": "tips fetch successfully",
+        "data": data
+      }
+
+      res.send(response);
+    });
+
+    app.put("/tips/:id", async(req,res)=>{
+      const id = req.params.id;
+      const updatedTips = req.body;
+      const query = {"_id": new ObjectId(id)}
+      const options = {upsert: true};
+      const updateDoc = {$set: updatedTips};
+
+      const data = await tipsCollection.updateOne(query, updateDoc, options);
+      const response = {
+        "success": true,
+        "message": "tips updated successfully",
+        "data": data
+      }
+      res.send(response);
+    })
+
     app.delete("/tips/:id", async(req,res)=>{
       const id = req.params.id;
       const data = await tipsCollection.deleteOne({"_id": new ObjectId(id)});
