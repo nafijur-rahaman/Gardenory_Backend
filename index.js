@@ -122,6 +122,32 @@ async function run() {
     })
 
 
+    app.put("/tips/:id/like", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const query = { _id: new ObjectId(id) };
+    const update = { $inc: { totalLiked: 1 } }; 
+
+    const result = await tipsCollection.updateOne(query, update);
+
+    if (result.modifiedCount === 1) {
+
+      const updatedTip = await tipsCollection.findOne(query);
+      res.send({
+        success: true,
+        message: "Tip liked successfully",
+        data: { totalLiked: updatedTip.totalLiked }
+      });
+    } else {
+      res.send({ success: false, message: "Tip not found" });
+    }
+  } catch (error) {
+    res.send({ success: false, message: error.message });
+  }
+});
+
+
+
 
   } catch (error) {
     console.error(error);
