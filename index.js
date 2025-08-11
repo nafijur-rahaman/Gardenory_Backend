@@ -32,6 +32,7 @@ async function run() {
      console.log("Connected to MongoDB!");
 
     const tipsCollection = client.db("gardenory").collection("tipcollection")
+    const gardenersCollection = client.db("gardenory").collection("gardeners")
 
 
     app.post("/tips", async(req,res)=>{
@@ -57,6 +58,29 @@ async function run() {
 
       res.send(response);
     });
+
+    app.get("/gardeners", async(req,res)=>{
+      const data = await gardenersCollection.find().toArray();
+      const response = {
+        "success": true,
+        "message": "gardeners fetch successfully",
+        "data": data
+      }
+
+      res.send(response);
+    });
+
+    app.post("/gardeners", async(req,res)=>{
+
+      const newGardeners = req.body;
+      const data = await gardenersCollection.insertMany(newGardeners);
+      const response ={
+        "success": true,
+        "message": "gardeners added successfully",
+        data
+      }
+      res.send(response);
+    })
 
 
 
