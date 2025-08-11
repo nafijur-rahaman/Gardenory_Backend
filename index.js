@@ -2,7 +2,7 @@ const express = require("express")
 const app = express();
 const cors = require("cors")
 const { json } = require("express");
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion,ObjectId } = require('mongodb');
 require("dotenv").config();
 
 app.use(cors());
@@ -38,7 +38,7 @@ async function run() {
     app.post("/tips", async(req,res)=>{
 
       const newTips = req.body;
-      const data = await tipsCollection.insertMany(newTips);
+      const data = await tipsCollection.insertOne(newTips);
       const response ={
         "success": true,
         "message": "tip added successfully",
@@ -58,6 +58,17 @@ async function run() {
 
       res.send(response);
     });
+
+    app.delete("/tips/:id", async(req,res)=>{
+      const id = req.params.id;
+      const data = await tipsCollection.deleteOne({"_id": new ObjectId(id)});
+      const response = {
+        "success": true,
+        "message": "tips deleted successfully",
+        "data": data
+      }
+      res.send(response);
+    })
 
     app.get("/gardeners", async(req,res)=>{
       const data = await gardenersCollection.find().toArray();
