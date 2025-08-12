@@ -147,6 +147,25 @@ async function run() {
 });
 
 
+app.get("/top-gardeners", async (req, res) => {
+  const status = req.query.status || "Active";
+  const limit = parseInt(req.query.limit) || 6;
+  const result = await gardenersCollection.find({ status }).limit(limit).toArray();
+  res.send(result);
+});
+
+
+app.get("/trending-tips", async (req, res) => {
+  const limit = parseInt(req.query.limit) || 6;
+  const sort = req.query.sort === "likes" ? { totalLiked: -1 } : {};
+  const result = await tipsCollection.find().sort(sort).limit(limit).toArray();
+  res.send(result);
+});
+
+
+
+
+
 
 
   } catch (error) {
